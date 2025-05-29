@@ -1,0 +1,20 @@
+---
+title: "OLM_tutorial"
+format: html
+editor: visual
+---
+
+**Install packages**
+
+```{r}
+
+library(MASS)
+library(tidyverse)
+library(car)
+#library(car) for diagnostic tests
+library(broom)
+library(corrplot)
+library(GGally)
+library(performance)
+library(see) 
+```
