@@ -4,17 +4,73 @@ format: html
 editor: visual
 ---
 
+### When to use OLS?
+
+1.  The outcome variable is continuous.
+
+2.  The residuals are normally distributed around 0, i.e. the differences between the actual data and the predicted values are normally distributed around 0. If they are not, the estimated model coefficients will still be valid, but inference (p-values and confidence intervals) will not be valid.
+
+3.  The relationship between the model coefficients and the outcome is linear, i.e. the relationship doesn't change across the range of either sets of variables. To give an example, if we have a model as follows:
+
+    $$ \text{Weight} = \beta_0 + \beta_1 \cdot \text{Height}$$
+
+    Every 1 inch increase in height leads to the same increase in weight (equal to $\beta_1$) **regardless** of whether you're 60 inches tall or 10 inches tall. Whether $\beta_1$ is equal to 1, 4, or 8, its effect on weight will be constant across all outcomes. Examples of models that would violate the linearity requirement are:
+
+$$
+y = \beta_1^2 x
+$$ $$
+y= log(\beta_2) x
+$$
+
+$$
+y=\beta_1 \cdot \beta_2 \cdot x
+$$
+
+4.  The observations are independent of each other.
+5.  The predictors are not highly correlated with each other.
+
 **Install packages**
 
 ```{r}
+#| echo: false
 
 library(MASS)
 library(tidyverse)
 library(car)
-#library(car) for diagnostic tests
 library(broom)
 library(corrplot)
 library(GGally)
 library(performance)
 library(see) 
+library(kableExtra)
+library(knitr)
+library(psych)
+
+
+```
+
+**Load the Boston housing dataset and view summary stats**
+
+```{r}
+
+data(Boston)
+kbl(head(Boston), digits=2) %>% kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+Now we will look at a summary of the data. Note that we use describe() from the psych package as this gives a much nicer table that summary() from base R. In this summary:
+
+-   Kurtosis describes "how spread out the data is", i.e. whether the spread in the data around the mean comes from many moderate deviations or a few very extreme ones.
+
+-   Skew describes whether the data is symmetrical around the mean, or has a long rightward tail (positive skew) or a long leftward tail (negative skew).
+
+```{r}
+
+boston_desc <- describe(Boston) %>% select(-vars, -trimmed, -mad) %>% round(2)
+
+kbl(boston_desc) %>% kable_styling(bootstrap_options = c("striped"))
+```
+
+```{r}
+
+hist(Boston$indus, breaks=50)
 ```
